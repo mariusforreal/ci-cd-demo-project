@@ -1,18 +1,25 @@
 ```mermaid
-sequenceDiagram
-  participant Dev as Developer
-  participant GH as GitHub
-  participant J as Jenkins on EC2
-  participant D as Docker on EC2
-  participant U as User
+flowchart LR
+  %% Developer Stage
+  A[👩‍💻 Developer<br/>Write & push code] -->|Git push| B[📦 GitHub Repository]
 
-  Dev->>GH: git push
-  GH-->>J: webhook or poll
-  J->>GH: checkout code
-  J->>D: build image
-  J->>D: stop old container
-  J->>D: run new container (port 3000)
-  U->>D: HTTP request to port 3000
+  %% Jenkins Stage
+  B -->|Webhook or Poll SCM| C[⚙️ Jenkins (EC2)]
+
+  subgraph CI[Continuous Integration on Jenkins]
+    C --> D[🔍 Checkout latest code]
+    D --> E[🐳 Build Docker image]
+    E --> F[🧹 Stop & remove old container]
+    F --> G[🚀 Run new container<br/>Expose port 3000]
+  end
+
+  %% Deployment target
+  subgraph EC2[AWS EC2 Instance]
+    G --> H[🧩 Running App Container]
+  end
+
+  %% User Interaction
+  H -->|HTTP :3000| I[🌍 End User<br/>Access application]
 
   ```
 
