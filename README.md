@@ -1,17 +1,19 @@
 ```mermaid
-flowchart TD
-  Dev[Developer] -->|git push| GH[GitHub repository]
-  GH -->|webhook or poll| JENK[Jenkins on EC2]
+sequenceDiagram
+  participant Dev as Developer
+  participant GH as GitHub
+  participant J as Jenkins on EC2
+  participant D as Docker on EC2
+  participant U as User
 
-  subgraph EC2[AWS EC2 host]
-    JENK --> CO[Checkout code]
-    CO --> B[Build Docker image]
-    B --> S[Stop old container]
-    S --> R[Run new container]
-    R --> APP[App container on port 3000]
-  end
+  Dev->>GH: git push
+  GH-->>J: webhook or poll
+  J->>GH: checkout code
+  J->>D: build image
+  J->>D: stop old container
+  J->>D: run new container (port 3000)
+  U->>D: HTTP request to port 3000
 
-  USER[End user] -->|HTTP to port 3000| APP
   ```
 
 ---
