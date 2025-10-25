@@ -1,21 +1,3 @@
-```mermaid
-graph TD
-  A[Developer]
-  B[GitHub]
-  C[Jenkins on EC2]
-  D[Docker build]
-  E[Stop old container]
-  F[Run new container]
-  G[App container :3000]
-  H[End user]
-
-  A --> B
-  B --> C
-  C --> D
-  D --> E
-  E --> F
-  F --> G
-  H --> G
 
 ---
 # 🚀 DevOps CI/CD Pipeline with Jenkins, Docker & AWS EC2
