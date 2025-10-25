@@ -1,20 +1,21 @@
 ```mermaid
-flowchart LR
-  dev[Developer] -->|git push| gh[GitHub repository]
-  gh -->|webhook or poll| jenkins[Jenkins on EC2]
+flowchart TD
+  Dev[Developer] -->|git push| GH[GitHub repository]
+  GH -->|webhook or poll| J[Jenkins on EC2]
 
-  subgraph CI [Continuous integration on Jenkins]
-    jenkins --> checkout[Checkout code]
-    checkout --> build[Build Docker image]
-    build --> stop[Stop old container]
-    stop --> run[Run new container]
+  subgraph CI [CI on Jenkins]
+    J --> CO[Checkout code]
+    CO --> BI[Build Docker image]
+    BI --> ST[Stop old container]
+    ST --> RN[Run new container]
   end
 
   subgraph HOST [AWS EC2 host]
-    run --> app[Application container on port 3000]
+    RN --> APP[Application container on port 3000]
   end
 
-  user[End user] -->|HTTP to port 3000| app
+  User[End user] -->|HTTP to port 3000| APP
+
 
 
 ---
