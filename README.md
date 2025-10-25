@@ -42,7 +42,7 @@ flowchart LR
   EC2 --- N1
   ```
 
-
+---
 # 🚀 DevOps CI/CD Pipeline with Jenkins, Docker & AWS EC2
 
 This project demonstrates a full CI/CD pipeline using **Jenkins**, **Docker**, and **AWS EC2**, deploying a simple **Node.js web application**.
