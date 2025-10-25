@@ -1,45 +1,13 @@
-flowchart LR
-  %% CI/CD for mariusforreal/ci-cd-demo-project
-  %% Git push triggers Jenkins; Jenkins builds Docker image and runs container on EC2.
-
-  subgraph DEV["Developer"]
-    A[Code changes<br/>commit & push]
+flowchart TD
+  Dev[Developer] -->|push| GH[GitHub repo<br/>mariusforreal/ci-cd-demo-project]
+  GH -->|webhook / poll SCM| JENK[Jenkins on EC2]
+  subgraph EC2[AWS EC2 Host]
+    JENK --> CO[Checkout code]
+    CO --> B[Docker build image]
+    B --> S[Stop & remove old container]
+    S --> R[Run new container<br/>expose :3000]
   end
-
-  subgraph GH["GitHub<br/>ci-cd-demo-project"]
-    B[Repository<br/>main branch]
-  end
-
-  subgraph JENK["Jenkins on AWS EC2<br/>(port 8080)"]
-    C1[Checkout from GitHub]
-    C2[Build Docker image<br/>(docker build -t ci-cd-demo .)]
-    C3[Stop old container<br/>(docker stop demo || true)]
-    C4[Remove old container<br/>(docker rm demo || true)]
-    C5[Run new container<br/>(docker run -d -p 3000:3000 --name demo ci-cd-demo)]
-    C6{{Post: success/failure<br/>pipeline logs}}
-  end
-
-  subgraph EC2["AWS EC2 Host"]
-    D1[Docker Engine]
-    D2[(Container: demo)]
-    D3[Node.js app<br/>listens on :3000]
-  end
-
-  subgraph USERS["End Users"]
-    U[Access via<br/>http://<EC2-Public-IP>:3000]
-  end
-
-  A -->|git push| B
-  B -->|SCM webhook/poll| JENK
-  JENK --> C1 --> C2 --> C3 --> C4 --> C5 --> C6
-  C2 -.uses.-> D1
-  C5 --> D2 --> D3 --> U
-
-  %% Networking notes
-  classDef note fill:#f6f8fa,stroke:#d0d7de,color:#24292f,font-size:12px;
-  N1[[Security Groups:<br/>22 (SSH), 8080 (Jenkins), 3000 (App)]]:::note
-  EC2 --- N1
-
+  R --> User[End user hits http://<EC2-Public-IP>:3000]
 
 
 
