@@ -1,27 +1,21 @@
 ```mermaid
 flowchart LR
-  %% Developer Stage
-  A[👩‍💻 Developer<br/>Write & push code] -->|Git push| B[📦 GitHub Repository]
+  dev[Developer] -->|git push| gh[GitHub repository]
+  gh -->|webhook or poll| jenkins[Jenkins on EC2]
 
-  %% Jenkins Stage
-  B -->|Webhook or Poll SCM| C[⚙️ Jenkins (EC2)]
-
-  subgraph CI[Continuous Integration on Jenkins]
-    C --> D[🔍 Checkout latest code]
-    D --> E[🐳 Build Docker image]
-    E --> F[🧹 Stop & remove old container]
-    F --> G[🚀 Run new container<br/>Expose port 3000]
+  subgraph CI [Continuous integration on Jenkins]
+    jenkins --> checkout[Checkout code]
+    checkout --> build[Build Docker image]
+    build --> stop[Stop old container]
+    stop --> run[Run new container]
   end
 
-  %% Deployment target
-  subgraph EC2[AWS EC2 Instance]
-    G --> H[🧩 Running App Container]
+  subgraph HOST [AWS EC2 host]
+    run --> app[Application container on port 3000]
   end
 
-  %% User Interaction
-  H -->|HTTP :3000| I[🌍 End User<br/>Access application]
+  user[End user] -->|HTTP to port 3000| app
 
-  ```
 
 ---
 # 🚀 DevOps CI/CD Pipeline with Jenkins, Docker & AWS EC2
