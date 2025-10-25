@@ -1,14 +1,18 @@
-flowchart TD
-  Dev[Developer] -->|push| GH[GitHub repo<br/>mariusforreal/ci-cd-demo-project]
-  GH -->|webhook / poll SCM| JENK[Jenkins on EC2]
-  subgraph EC2[AWS EC2 Host]
-    JENK --> CO[Checkout code]
-    CO --> B[Docker build image]
-    B --> S[Stop & remove old container]
-    S --> R[Run new container<br/>expose :3000]
-  end
-  R --> User[End user hits http://<EC2-Public-IP>:3000]
+sequenceDiagram
+  participant Dev as Developer
+  participant GH as GitHub
+  participant J as Jenkins (EC2)
+  participant D as Docker (on EC2)
+  participant U as User
 
+  Dev->>GH: git push
+  GH-->>J: webhook / poll SCM
+  J->>GH: checkout source
+  J->>D: docker build -t ci-cd-demo .
+  J->>D: docker stop demo || true
+  J->>D: docker rm demo || true
+  J->>D: docker run -d -p 3000:3000 --name demo ci-cd-demo
+  U->>D: HTTP request to :3000
 
 
 # 🚀 DevOps CI/CD Pipeline with Jenkins, Docker & AWS EC2
