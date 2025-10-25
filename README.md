@@ -1,13 +1,13 @@
 ```mermaid
-flowchart TD
-  Dev[Developer] -->|git push| GH[GitHub]
-  GH -->|webhook or poll| J[Jenkins on EC2]
-  J --> C[Checkout code]
-  C --> B[Build Docker image]
-  B --> S[Stop old container]
-  S --> R[Run new container]
-  R --> A[App container on port 3000]
-  U[End user] -->|HTTP to port 3000| A
+graph TD
+  A[Developer] -->|git push| B[GitHub]
+  B -->|webhook or poll| C[Jenkins on EC2]
+  C --> D[Checkout code]
+  D --> E[Build Docker image]
+  E --> F[Stop old container]
+  F --> G[Run new container on port 3000]
+  H[End user] -->|HTTP to port 3000| G
+
 ---
 # 🚀 DevOps CI/CD Pipeline with Jenkins, Docker & AWS EC2
 
